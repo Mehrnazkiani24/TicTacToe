@@ -1,6 +1,5 @@
-import '../App.css'; 
+import './styles/App.css';
 import React, { useState, useEffect } from 'react';
-
 
 const Dashboard = () => {
     const [rooms, setRooms] = useState([]);
@@ -25,6 +24,9 @@ const Dashboard = () => {
     return (
         <div className="dashboard-container">
             <h2 className="heading">Available Rooms</h2>
+            <div className="button-container">
+                <button className="create-room-button">Create Room</button>
+            </div>
             <table className="table-container">
                 <thead>
                     <tr>
@@ -43,7 +45,6 @@ const Dashboard = () => {
             </table>
             <div className="button-container">
                 <button className="join-room-button">Join Room</button>
-                <button className="create-room-button">Create Room</button>
             </div>
         </div>
     );
