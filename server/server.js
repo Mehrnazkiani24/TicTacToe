@@ -25,6 +25,7 @@ app.use(
 
 // Define Routes
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/room", require("./routes/room"));
 
 const PORT = process.env.PORT || 5001;
 
