@@ -11,7 +11,7 @@ const db = require('./config/connection');
 // Comment out this code once you have built out queries and mutations in the client folder
 const routes = require('./routes');
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5001;
 const app = express();
 // Uncomment the following code once you have built the queries and mutations in the client folder
 // const server = new ApolloServer({
