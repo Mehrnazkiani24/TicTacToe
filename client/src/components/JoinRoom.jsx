@@ -1,28 +1,43 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useMutation, gql } from "@apollo/client";
+import axios from "axios";
 
-const CREATE_GAME = gql`
-  mutation CreateGame($playerId: ID!) {
-    createGame(playerId: $playerId) {
-      id
-    }
-  }
-`;
-
-const JoinRoom = () => {
+const JoinRoom = ({ token }) => {
   const [roomId, setRoomId] = useState("");
-  const navigate = useNavigate();
-  const [createGame] = useMutation(CREATE_GAME);
+  const [message, setMessage] = useState("");
 
   const handleCreateRoom = async () => {
-    const playerId = localStorage.getItem("userId"); // Assume userId is stored in localStorage after login
-    const { data } = await createGame({ variables: { playerId } });
-    navigate(`/game/${data.createGame.id}`);
+    try {
+      const response = await axios.post(
+        "http://localhost:5001/api/room/create",
+        {},
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+      setRoomId(response.data.roomId);
+      setMessage("Room created successfully. Room ID: " + response.data.roomId);
+    } catch (error) {
+      setMessage("Failed to create room. Please try again.");
+    }
   };
 
-  const handleJoinRoom = () => {
-    navigate(`/game/${roomId}`);
+  const handleJoinRoom = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5001/api/room/join",
+        { roomId },
+        {
+          headers: {
+            "x-auth-token": token,
+          },
+        }
+      );
+      setMessage("Joined room successfully.");
+    } catch (error) {
+      setMessage("Failed to join room. Please try again.");
+    }
   };
 
   return (
@@ -30,11 +45,12 @@ const JoinRoom = () => {
       <button onClick={handleCreateRoom}>Create Room</button>
       <input
         type="text"
-        placeholder="Enter Room ID"
         value={roomId}
         onChange={(e) => setRoomId(e.target.value)}
+        placeholder="Enter Room ID"
       />
       <button onClick={handleJoinRoom}>Join Room</button>
+      {message && <p>{message}</p>}
     </div>
   );
 };

@@ -1,16 +1,21 @@
-import React from "react";
-import Login from "../components/Login.jsx";
-import Register from "../components/Register.jsx";
-import JoinRoom from "../components/JoinRoom.jsx";
-import GameBoard from "../components/GameBoard.jsx";
+import React, { useState } from "react";
+import Login from "../components/Login";
+import Register from "../components/Register";
+import JoinRoom from "../components/JoinRoom";
 
 const Home = () => {
+  const [token, setToken] = useState(null);
+
+  const handleLoginSuccess = (token) => {
+    setToken(token);
+  };
+
   return (
     <div>
       <h1>Tic Tac Toe</h1>
       <Register />
-      <Login />
-      <JoinRoom />
+      <Login onLoginSuccess={handleLoginSuccess} />
+      {token && <JoinRoom token={token} />}
     </div>
   );
 };
