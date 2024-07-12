@@ -6,21 +6,57 @@ body {
   justify-content: center;
   align-items: center;
 }
+#page_header {
+  position: relative !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  background-color: white !important;
+  padding: 20px !important;
+  text-align: center !important;
+  width: 100% !important;
+}
 
-.dashboard-container {
+
+.table-container {
   width: 80%;
   max-width: 1200px;
 padding: 20px;
+background-color: beige;
 box-shadow: 0 4px rgba(0,0,0,0.1);}
+
+.table-container th, .table-container td {
+  border: 1px solid #ddd; 
+  padding: 8px; 
+  text-align: left; 
+}
+
+.table-container tr:nth-child(even) {
+  background-color: #f2f2f2; 
+}
+
 .create-room-button {
   background-color: #4CAF50;
-  border: none;
   color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
+  margin: 5px;
+}
+
+.create-room-button:hover {
+  background-color: aqua;
+}
+.join-room-button {
+  background-color: #4CAF50; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.join-room-button:hover {
+  background-color: aqua; 
 }
