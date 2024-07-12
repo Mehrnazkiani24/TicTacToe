@@ -1,6 +1,7 @@
 import React from "react";
-import JoinRoom from "../components/JoinRoom";
 import Login from "../components/Login";
+import JoinRoom from "../components/JoinRoom";
+import GameBoard from "../components/GameBoard";
 import Register from "../components/Register";
 
 const Home = () => {
@@ -8,7 +9,6 @@ const Home = () => {
     <div>
       <h1>Tic Tac Toe</h1>
       <Login />
-      <Register />
       <JoinRoom />
     </div>
   );
