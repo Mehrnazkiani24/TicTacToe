@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const JoinRoom = ({ token }) => {
   const [roomId, setRoomId] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleCreateRoom = async () => {
     try {
@@ -18,6 +20,7 @@ const JoinRoom = ({ token }) => {
       );
       setRoomId(response.data.roomId);
       setMessage("Room created successfully. Room ID: " + response.data.roomId);
+      navigate(`/room/${response.data.roomId}`);
     } catch (error) {
       setMessage("Failed to create room. Please try again.");
     }
@@ -35,6 +38,7 @@ const JoinRoom = ({ token }) => {
         }
       );
       setMessage("Joined room successfully.");
+      navigate(`/room/${roomId}`);
     } catch (error) {
       setMessage("Failed to join room. Please try again.");
     }
