@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:5001");
 
 const GameRoom = () => {
   const { roomId } = useParams();
   const [gameState, setGameState] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
 
-  // Add game logic and socket integration here
+  useEffect(() => {
+    socket.emit("joinRoom", roomId);
+
+    socket.on("moveMade", (newGameState) => {
+      setGameState(newGameState);
+      setIsXNext((prev) => !prev);
+    });
+
+    return () => {
+      socket.off("moveMade");
+    };
+  }, [roomId]);
 
   const handleClick = (index) => {
     const newGameState = gameState.slice();
@@ -16,6 +30,7 @@ const GameRoom = () => {
     newGameState[index] = isXNext ? "X" : "O";
     setGameState(newGameState);
     setIsXNext(!isXNext);
+    socket.emit("makeMove", { roomId, gameState: newGameState });
   };
 
   const calculateWinner = (squares) => {
