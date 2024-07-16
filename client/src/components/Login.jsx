@@ -11,12 +11,11 @@ const Login = ({ onLoginSuccess }) => {
     try {
       const response = await axios.post(
         "http://localhost:5001/api/auth/login",
-        {
-          username,
-          password,
-        }
+        { username, password }
       );
       const token = response.data.token;
+      const userId = response.data.user.id; // Assuming the response includes the user ID
+      localStorage.setItem("userId", userId); // Store user ID in local storage
       setMessage("Login successful!");
       onLoginSuccess(token); // Pass the token to the parent component
     } catch (error) {

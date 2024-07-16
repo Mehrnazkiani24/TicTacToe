@@ -9,7 +9,6 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Sending registration data:", { username, password }); // Add this line
       const response = await axios.post(
         "http://localhost:5001/api/auth/register",
         {
@@ -20,7 +19,6 @@ const Register = () => {
       setMessage("Registration successful! Please log in.");
     } catch (error) {
       setMessage("Registration failed. Please try again.");
-      console.error("Registration error:", error.response.data); // Add this line
     }
   };
 

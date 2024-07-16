@@ -7,84 +7,74 @@ const socket = io("http://localhost:5001");
 const GameRoom = () => {
   const { roomId } = useParams();
   const [gameState, setGameState] = useState(Array(9).fill(null));
-  const [isXNext, setIsXNext] = useState(true);
+  const [currentTurn, setCurrentTurn] = useState(null);
+  const [userMark, setUserMark] = useState("");
+  const [userId, setUserId] = useState(localStorage.getItem("userId"));
 
   useEffect(() => {
-    socket.emit("joinRoom", roomId);
+    socket.emit("joinRoom", { roomId, userId });
 
-    socket.on("moveMade", (newGameState) => {
-      setGameState(newGameState);
-      setIsXNext((prev) => !prev);
+    socket.on("assignMark", (mark) => {
+      setUserMark(mark);
+    });
+
+    socket.on("moveMade", ({ gameState, currentTurn }) => {
+      setGameState(gameState);
+      setCurrentTurn(currentTurn);
+    });
+
+    socket.on("opponentJoined", ({ currentTurn }) => {
+      setCurrentTurn(currentTurn);
     });
 
     return () => {
+      socket.off("assignMark");
       socket.off("moveMade");
+      socket.off("opponentJoined");
     };
-  }, [roomId]);
+  }, [roomId, userId]);
 
   const handleClick = (index) => {
+    if (gameState[index] || currentTurn !== userId) return;
     const newGameState = gameState.slice();
-    if (calculateWinner(gameState) || newGameState[index]) {
-      return;
-    }
-    newGameState[index] = isXNext ? "X" : "O";
+    newGameState[index] = userMark;
     setGameState(newGameState);
-    setIsXNext(!isXNext);
-    socket.emit("makeMove", { roomId, gameState: newGameState });
+
+    socket.emit("makeMove", { roomId, gameState: newGameState, userId });
   };
 
-  const calculateWinner = (squares) => {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
-        return squares[a];
-      }
-    }
-    return null;
-  };
-
-  const winner = calculateWinner(gameState);
-  let status;
-  if (winner) {
-    status = `Winner: ${winner}`;
-  } else {
-    status = `Next player: ${isXNext ? "X" : "O"}`;
-  }
+  const renderSquare = (index) => (
+    <button className="square" onClick={() => handleClick(index)}>
+      {gameState[index]}
+    </button>
+  );
 
   return (
     <div>
-      <h2>Room ID: {roomId}</h2>
-      <div>{status}</div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 100px)",
-          gap: "10px",
-        }}
-      >
-        {gameState.map((value, index) => (
-          <button
-            key={index}
-            onClick={() => handleClick(index)}
-            style={{ width: "100px", height: "100px", fontSize: "24px" }}
-          >
-            {value}
-          </button>
-        ))}
+      <h3>Room ID: {roomId}</h3>
+      <div className="status">
+        {currentTurn === userId
+          ? "Your turn"
+          : currentTurn
+          ? "Opponent's turn"
+          : "Waiting for opponent to join..."}
+      </div>
+      <div className="board">
+        <div className="board-row">
+          {renderSquare(0)}
+          {renderSquare(1)}
+          {renderSquare(2)}
+        </div>
+        <div className="board-row">
+          {renderSquare(3)}
+          {renderSquare(4)}
+          {renderSquare(5)}
+        </div>
+        <div className="board-row">
+          {renderSquare(6)}
+          {renderSquare(7)}
+          {renderSquare(8)}
+        </div>
       </div>
     </div>
   );

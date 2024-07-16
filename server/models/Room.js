@@ -8,15 +8,16 @@ const RoomSchema = new mongoose.Schema({
   },
   players: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
     },
   ],
-  status: {
+  gameState: {
+    type: Array,
+    default: Array(9).fill(null),
+  },
+  currentTurn: {
     type: String,
-    enum: ["waiting", "playing", "finished"],
-    default: "waiting",
   },
 });
 
-module.exports = mongoose.model("Room", RoomSchema);
+module.exports = Room = mongoose.model("room", RoomSchema);

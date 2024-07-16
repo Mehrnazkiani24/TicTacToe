@@ -5,7 +5,7 @@ require("dotenv").config();
 
 exports.register = async (req, res) => {
   const { username, password } = req.body;
-  console.log("Received registration data:", { username, password });
+  console.log("Received registration data:", { username, password }); // Add this line
   try {
     let user = await User.findOne({ username });
 
@@ -35,7 +35,7 @@ exports.register = async (req, res) => {
       { expiresIn: 360000 },
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ token, user: { id: user.id } }); // Include user ID in the response
       }
     );
   } catch (err) {
@@ -71,7 +71,7 @@ exports.login = async (req, res) => {
       { expiresIn: 360000 },
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ token, user: { id: user.id } }); // Include user ID in the response
       }
     );
   } catch (err) {
