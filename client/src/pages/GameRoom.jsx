@@ -11,6 +11,51 @@ const GameRoom = () => {
   const [currentTurn, setCurrentTurn] = useState(null);
   const [userMark, setUserMark] = useState("");
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
+  const [winner, setWinner] = useState(null);
+
+  const checkWinner = (gameState) => {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (
+        gameState[a] &&
+        gameState[a] === gameState[b] &&
+        gameState[a] === gameState[c]
+      ) {
+        return gameState[a];
+      }
+    }
+    return null;
+  };
+
+  const handleClick = (index) => {
+    if (gameState[index] || currentTurn !== userId || winner) return;
+    const newGameState = gameState.slice();
+    newGameState[index] = userMark;
+    setGameState(newGameState);
+
+    const gameWinner = checkWinner(newGameState);
+
+    if (gameWinner) {
+      socket.emit("gameOver", {
+        roomId,
+        gameState: newGameState,
+        winner: gameWinner,
+      });
+    } else {
+      socket.emit("makeMove", { roomId, gameState: newGameState, userId });
+    }
+  };
 
   useEffect(() => {
     socket.emit("joinRoom", { roomId, userId });
@@ -28,21 +73,18 @@ const GameRoom = () => {
       setCurrentTurn(currentTurn);
     });
 
+    socket.on("gameOver", ({ gameState, winner }) => {
+      setGameState(gameState);
+      setWinner(winner);
+    });
+
     return () => {
       socket.off("assignMark");
       socket.off("moveMade");
       socket.off("opponentJoined");
+      socket.off("gameOver");
     };
   }, [roomId, userId]);
-
-  const handleClick = (index) => {
-    if (gameState[index] || currentTurn !== userId) return;
-    const newGameState = gameState.slice();
-    newGameState[index] = userMark;
-    setGameState(newGameState);
-
-    socket.emit("makeMove", { roomId, gameState: newGameState, userId });
-  };
 
   const renderSquare = (index) => (
     <button className="square" onClick={() => handleClick(index)}>
@@ -54,7 +96,11 @@ const GameRoom = () => {
     <div>
       <h3>Room ID: {roomId}</h3>
       <div className="status">
-        {currentTurn === userId
+        {winner
+          ? winner === userMark
+            ? `You win!`
+            : `You lose!`
+          : currentTurn === userId
           ? "Your turn"
           : currentTurn
           ? "Opponent's turn"

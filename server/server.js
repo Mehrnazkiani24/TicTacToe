@@ -39,6 +39,31 @@ app.use("/api/room", require("./routes/room"));
 
 const PORT = process.env.PORT || 5001;
 
+const checkWinner = (gameState) => {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (
+      gameState[a] &&
+      gameState[a] === gameState[b] &&
+      gameState[a] === gameState[c]
+    ) {
+      return gameState[a];
+    }
+  }
+  return null;
+};
+
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -107,18 +132,26 @@ io.on("connection", (socket) => {
         return;
       }
 
-      room.gameState = gameState;
-      const nextTurn = room.players.find((player) => player !== userId);
-      room.currentTurn = nextTurn;
-      await room.save();
+      const winner = checkWinner(gameState);
 
-      io.to(roomId).emit("moveMade", {
-        gameState: room.gameState,
-        currentTurn: room.currentTurn,
-      });
+      if (winner) {
+        room.gameState = gameState;
+        await room.save();
+        io.to(roomId).emit("gameOver", { gameState, winner });
+      } else {
+        room.gameState = gameState;
+        const nextTurn = room.players.find((player) => player !== userId);
+        room.currentTurn = nextTurn;
+        await room.save();
 
-      console.log(`Move made by: ${userId}`);
-      console.log(`Next turn: ${room.currentTurn}`);
+        io.to(roomId).emit("moveMade", {
+          gameState: room.gameState,
+          currentTurn: room.currentTurn,
+        });
+
+        console.log(`Move made by: ${userId}`);
+        console.log(`Next turn: ${room.currentTurn}`);
+      }
     } catch (err) {
       console.error(err.message);
     }
