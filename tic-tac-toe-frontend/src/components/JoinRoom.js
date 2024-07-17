@@ -8,6 +8,7 @@ const JoinRoom = ({ match }) => {
       <h2>Join room {roomId}</h2>
       <p>Garfield Cat!.</p>
 
+
     </div>
   );
 };
