@@ -1,5 +1,5 @@
 const express = require("express");
-const { graphqlHTTP } = require("express-graphql");
+const { createHttpHandler } = require("graphql-http");
 const schema = require("./schema/schema");
 const connectDB = require("./config/db");
 const cors = require("cors");
@@ -31,10 +31,7 @@ app.use(cors());
 // GraphQL endpoint
 app.use(
   "/graphql",
-  graphqlHTTP({
-    schema,
-    graphiql: true,
-  })
+  createHttpHandler({ schema, graphiql: true })
 );
 
 // Define Routes
