@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
-import apolloClient from './apolloClient'; 
+import apolloClient from './apolloClient';
+import io from 'socket.io-client'; // Import Socket.IO client
 
 // GraphQL Query to fetch games
 const GET_GAMES = gql`
@@ -64,6 +65,34 @@ const Dashboard = () => {
             console.log(result.data.createGame);
         });
     };
+
+    useEffect(() => {
+        const socket = io('http://localhost:5001'); 
+        socket.on('connect', () => {
+            console.log('Connected to Socket.IO server');
+        });
+
+        // Listen for Socket.IO events
+        socket.on('opponentJoined', (data) => {
+            console.log('Opponent joined:', data);
+        });
+
+        socket.on('assignMark', (mark) => {
+            console.log('Assigned mark:', mark);
+        });
+
+        socket.on('moveMade', (data) => {
+            console.log('Move made:', data);
+        });
+
+        socket.on('gameOver', (data) => {
+            console.log('Game over:', data);
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
 
     if (isLoading || gamesLoading) return <p>Loading...</p>;
 
