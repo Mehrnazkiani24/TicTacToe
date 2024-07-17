@@ -51,11 +51,17 @@ As a player I want to play a game of Tic Tac Toe with another player in real-tim
    Run the server
 
    ```bash
+   npm start
+   ```
+
+3. **Frontend Setup**
+
+   ```bash
    cd ../client
    npm install
    ```
 
-3. **Run the client**
+   Run the client:
 
    ```bash
    npm start
