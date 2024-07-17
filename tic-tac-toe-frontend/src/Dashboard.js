@@ -3,9 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 import apolloClient from './apolloClient';
-import io from 'socket.io-client'; // Import Socket.IO client
 
-// GraphQL Query to fetch games
+
 const GET_GAMES = gql`
   query GetGames {
     games {
@@ -19,7 +18,7 @@ const GET_GAMES = gql`
   }
 `;
 
-// GraphQL Mutation to create a new game
+
 const CREATE_GAME = gql`
   mutation CreateGame($playerId: ID!) {
     createGame(playerId: $playerId) {
@@ -35,10 +34,7 @@ const CREATE_GAME = gql`
 
 const Dashboard = () => {
     const [isLoading, setIsLoading] = useState(true);
-    const [rooms, setRooms] = useState([]);
-    const [isEditing, setIsEditing] = useState(false);
-    const [selectedRoomId, setSelectedRoomId] = useState(null);
-    let nextRoomId = 1000; // Initialize the room ID counter
+    const [games, setGames] = useState([]);
 
     // Fetch games from GraphQL server
     const { loading: gamesLoading, error: gamesError, data: gamesData } = useQuery(GET_GAMES);
@@ -47,16 +43,13 @@ const Dashboard = () => {
     const [createGame] = useMutation(CREATE_GAME);
 
     useEffect(() => {
-        // Simulate a delay in fetching rooms
+        // Simulate a delay in fetching games
         setTimeout(() => {
             setIsLoading(false);
-            // Example rooms data
-            setRooms([
-                { _id: '1', status: 'Available' },
-                { _id: '2', status: 'Occupied' },
-            ]);
+            // Assuming gamesData is returned with the expected structure
+            setGames(gamesData?.games || []);
         }, 2000);
-    }, []);
+    }, [gamesData]);
 
     const handleCreateGame = () => {
         createGame({
@@ -65,34 +58,6 @@ const Dashboard = () => {
             console.log(result.data.createGame);
         });
     };
-
-    useEffect(() => {
-        const socket = io('http://localhost:5001'); 
-        socket.on('connect', () => {
-            console.log('Connected to Socket.IO server');
-        });
-
-        // Listen for Socket.IO events
-        socket.on('opponentJoined', (data) => {
-            console.log('Opponent joined:', data);
-        });
-
-        socket.on('assignMark', (mark) => {
-            console.log('Assigned mark:', mark);
-        });
-
-        socket.on('moveMade', (data) => {
-            console.log('Move made:', data);
-        });
-
-        socket.on('gameOver', (data) => {
-            console.log('Game over:', data);
-        });
-
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
 
     if (isLoading || gamesLoading) return <p>Loading...</p>;
 
@@ -106,10 +71,16 @@ const Dashboard = () => {
                 <div className="button-container">
                     <button onClick={handleCreateGame} className="create-game-button">Create New Game</button>
                 </div>
-                {/* Render games fetched from GraphQL server */}
+                <ul>
+                    {games.map((game) => (
+                        <li key={game.id}>
+                            <Link to={`/join-room/${game.id}`}>Join Room {game.id}</Link>
+                        </li>
+                    ))}
+                </ul>
             </div>
             <Routes>
-                <Route path="/join-room/:roomId" element={<JoinRoom />} />
+                <Route path="/join-room/:roomId" element={<GameRoom />} /> {/* Ensure GameRoom component is imported */}
             </Routes>
         </Router>
     );
