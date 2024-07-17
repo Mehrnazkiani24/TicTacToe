@@ -132,14 +132,17 @@ io.on("connection", (socket) => {
         return;
       }
 
+      room.gameState = gameState;
       const winner = checkWinner(gameState);
-
+      console.log(`Winner: ${winner} ${gameState}`);
       if (winner) {
-        room.gameState = gameState;
         await room.save();
-        io.to(roomId).emit("gameOver", { gameState, winner });
+        io.to(roomId).emit("moveMade", {
+          gameState: room.gameState,
+          currentTurn: room.currentTurn,
+        });
+        io.to(roomId).emit("gameOver", { gameState, winner }); // Emit the final game state and winner
       } else {
-        room.gameState = gameState;
         const nextTurn = room.players.find((player) => player !== userId);
         room.currentTurn = nextTurn;
         await room.save();

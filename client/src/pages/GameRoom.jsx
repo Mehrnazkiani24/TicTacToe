@@ -46,15 +46,15 @@ const GameRoom = () => {
 
     const gameWinner = checkWinner(newGameState);
 
-    if (gameWinner) {
-      socket.emit("gameOver", {
-        roomId,
-        gameState: newGameState,
-        winner: gameWinner,
-      });
-    } else {
-      socket.emit("makeMove", { roomId, gameState: newGameState, userId });
-    }
+    // if (gameWinner) {
+    //   socket.emit("gameOver", {
+    //     roomId,
+    //     gameState: newGameState,
+    //     winner: gameWinner,
+    //   });
+    // } else {
+    socket.emit("makeMove", { roomId, gameState: newGameState, userId });
+    // }
   };
 
   useEffect(() => {
