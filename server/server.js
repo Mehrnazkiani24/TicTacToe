@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schema/schema");
@@ -36,6 +37,13 @@ app.use(
 // Define Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/room", require("./routes/room"));
+
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "public", "index.html"));
+});
 
 const PORT = process.env.PORT || 5001;
 
