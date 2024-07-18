@@ -8,7 +8,7 @@ const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const Room = require("./server/models/Room");
-
+const PORT = process.env.PORT || 5001;
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -23,7 +23,12 @@ connectDB();
 
 // Init Middleware
 app.use(express.json({ extended: false }));
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? 'https://git.heroku.com/somethinsimpletictactoes.git' 
+    : 'http://localhost:5173',
+  credentials: true
+}));
 
 // GraphQL endpoint
 app.use(
@@ -45,7 +50,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
-const PORT = process.env.PORT || 5001;
 
 const checkWinner = (gameState) => {
   const lines = [

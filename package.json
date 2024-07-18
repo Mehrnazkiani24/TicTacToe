@@ -312,8 +312,8 @@
     "yocto-queue": "^0.1.0"
   },
   "scripts": {
-    "build": "vite build",
     "start": "node server.js",
+    "build": "npm ci && cd client && npm ci && npm run build",
     "heroku-postbuild": "cd client && npm install && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
