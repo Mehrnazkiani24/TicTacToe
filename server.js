@@ -1,13 +1,14 @@
+require('dotenv').config();
+console.log(process.env.MONGODB_URI);
 const path = require("path");
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
-const schema = require("./schema/schema");
-const connectDB = require("./config/db");
+const schema = require("./server/schema/schema");
+const connectDB = require("./server/config/db");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
-const Room = require("./models/Room");
-require("dotenv").config();
+const Room = require("./server/models/Room");
 
 const app = express();
 const server = http.createServer(app);
@@ -35,8 +36,8 @@ app.use(
 );
 
 // Define Routes
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/room", require("./routes/room"));
+app.use("/api/auth", require("./server/routes/auth"));
+app.use("/api/room", require("./server/routes/room"));
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, "public")));
