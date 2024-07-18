@@ -10,8 +10,16 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/api": "http://localhost:5001",
-      "/graphql": "http://localhost:5001",
+      "/api": {
+        target: process.env.VITE_API_URL || "http://localhost:5001",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/graphql": {
+        target: process.env.VITE_API_URL || "http://localhost:5001",
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

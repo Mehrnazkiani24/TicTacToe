@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log(process.env.MONGODB_URI);
 const path = require("path");
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
