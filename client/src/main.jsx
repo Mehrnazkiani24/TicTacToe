@@ -5,8 +5,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 
-const httpLink = createHttpLink({
-  uri: '/graphql',
+const httpLink = new HttpLink({
+  uri: 'http://localhost:5001/graphql',
 });
 
 const client = new ApolloClient({

@@ -25,7 +25,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? 'https://git.heroku.com/somethinsimpletictactoes.git' 
+    ? 'https://git.heroku.com/somethingsimpletictactoes.git' 
     : 'http://localhost:5173',
   credentials: true
 }));
