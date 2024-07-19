@@ -1,7 +1,11 @@
 
 # Tic Tac Toe Multiplayer Game
 
+## Description
+
 This is a real-time multiplayer Tic Tac Toe game built using the MERN stack (MongoDB, Express.js, React, Node.js) with Socket.io for real-time communication. Players can create or join game rooms, take turns making moves, and the game will automatically determine the winner.
+
+Live-Link: https://tictactoe-334d.onrender.com
 
 ## Features
 
@@ -72,6 +76,10 @@ As a player I want to play a game of Tic Tac Toe with another player in real-tim
    ```bash
    npm start
    ```
+
+   ## Screenshot
+   <img width="1440" alt="Screenshot 2024-07-18 at 6 15 14 PM" src="https://github.com/user-attachments/assets/66be928d-fdd3-42e2-a691-96c6799b0736">
+
 
 
 
