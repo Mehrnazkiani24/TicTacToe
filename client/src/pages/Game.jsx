@@ -5,7 +5,7 @@ import GameBoard from "../components/GameBoard";
 const Game = () => {
   const { id } = useParams();
   return (
-    <div>
+    <div className="game-container">
       <h1>Game Room: {id}</h1>
       <GameBoard gameId={id} />
     </div>
