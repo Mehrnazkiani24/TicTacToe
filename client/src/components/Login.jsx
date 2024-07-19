@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./AuthForm.css";
 
 const Login = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState("");
@@ -24,7 +25,7 @@ const Login = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div>
+    <div className="auth-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>

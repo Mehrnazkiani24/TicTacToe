@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./JoinRoom.css";
 
 const JoinRoom = ({ token }) => {
   const [roomId, setRoomId] = useState("");
@@ -45,16 +46,21 @@ const JoinRoom = ({ token }) => {
   };
 
   return (
-    <div>
-      <button onClick={handleCreateRoom}>Create Room</button>
+    <div className="join-room-container">
+      <button onClick={handleCreateRoom} className="create-room-button">
+        Create Room
+      </button>
       <input
         type="text"
         value={roomId}
         onChange={(e) => setRoomId(e.target.value)}
         placeholder="Enter Room ID"
+        className="room-id-input"
       />
-      <button onClick={handleJoinRoom}>Join Room</button>
-      {message && <p>{message}</p>}
+      <button onClick={handleJoinRoom} className="join-room-button">
+        Join Room
+      </button>
+      {message && <p className="message">{message}</p>}
     </div>
   );
 };
