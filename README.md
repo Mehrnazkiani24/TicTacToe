@@ -36,7 +36,7 @@ As a player I want to play a game of Tic Tac Toe with another player in real-tim
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/tic-tac-toe-multiplayer.git
+   git clone https://github.com/Mehrnazkiani24/TicTacToe.git
    cd tic-tac-toe-multiplayer
    ```
 
